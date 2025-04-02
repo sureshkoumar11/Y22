@@ -17,20 +17,18 @@ async function searchData() {
     const table = document.getElementById("dataTable"); 
     const noSearchMessage = document.getElementById("noSearchMessage");
 
-    table.style.display = "none"; // Hide table initially
+    console.log("🔍 Search terms:", searchTerm1, searchTerm2, searchTerm3);
 
     // If no input is provided, show the message and return
     if (!searchTerm1 && !searchTerm2 && !searchTerm3) {
         noSearchMessage.style.display = "block"; // Show message
+        table.style.display = "none"; // Hide table
         return; // Exit function
     }
 
     noSearchMessage.style.display = "none"; // Hide message when searching
 
     const jsonData = await fetchExcelData();
-
-    console.log("🔍 Searching for:", searchTerm1, searchTerm2, searchTerm3); // Debugging log
-    console.log("📄 Excel Data:", jsonData); // Debugging log
 
     const tableHead = document.getElementById("tableHead");
     const tableBody = document.getElementById("tableBody");
@@ -62,7 +60,7 @@ async function searchData() {
         );
     });
 
-    console.log("🔎 Filtered Results:", filteredData); // Debugging log
+    console.log("🔎 Filtered Results:", filteredData);
 
     if (filteredData.length === 0) {
         table.style.display = "block"; // Show table for "No results" message
