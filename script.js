@@ -10,6 +10,8 @@ async function searchData() {
     const searchTerm = document.getElementById("searchInput").value.toLowerCase();
     const jsonData = await fetchExcelData();
     
+    console.log("Excel Data:", jsonData); // ✅ Debugging step
+
     const tableHead = document.getElementById("tableHead");
     const tableBody = document.getElementById("tableBody");
     tableHead.innerHTML = "";
@@ -40,4 +42,6 @@ async function searchData() {
             tableBody.appendChild(tr);
         }
     });
+
+    console.log("Filtered Data:", tableBody.innerHTML); // ✅ Debugging step
 }
