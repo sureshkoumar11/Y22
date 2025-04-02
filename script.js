@@ -5,12 +5,23 @@ async function fetchExcelData() {
     const workbook = XLSX.read(data, { type: "array" });
     return XLSX.utils.sheet_to_json(workbook.Sheets[workbook.SheetNames[0]]);
 }
+async function fetchExcelData() {
+    const url = "https://raw.githubusercontent.com/sureshkoumar11/Y22/main/data.xlsx"; // Make sure this is correct
+    const response = await fetch(url);
+    const data = await response.arrayBuffer();
+    const workbook = XLSX.read(data, { type: "array" });
+    const jsonData = XLSX.utils.sheet_to_json(workbook.Sheets[workbook.SheetNames[0]]);
+    
+    console.log("✅ Loaded Excel Data:", jsonData); // Debugging log
+    return jsonData;
+}
 
 async function searchData() {
     const searchTerm = document.getElementById("searchInput").value.toLowerCase();
     const jsonData = await fetchExcelData();
-    
-    console.log("Excel Data:", jsonData); // ✅ Debugging step
+
+    console.log("🔍 Searching for:", searchTerm); // Debugging log
+    console.log("📄 Excel Data:", jsonData); // Debugging log
 
     const tableHead = document.getElementById("tableHead");
     const tableBody = document.getElementById("tableBody");
@@ -18,6 +29,7 @@ async function searchData() {
     tableBody.innerHTML = "";
 
     if (jsonData.length === 0) {
+        console.warn("⚠️ No data found in the Excel file!");
         tableBody.innerHTML = "<tr><td colspan='100%'>No data found.</td></tr>";
         return;
     }
@@ -31,17 +43,24 @@ async function searchData() {
     });
 
     // Filter and display data
-    jsonData.forEach(row => {
-        if (Object.values(row).some(value => value.toString().toLowerCase().includes(searchTerm))) {
-            const tr = document.createElement("tr");
-            headers.forEach(header => {
-                const td = document.createElement("td");
-                td.textContent = row[header];
-                tr.appendChild(td);
-            });
-            tableBody.appendChild(tr);
-        }
-    });
+    let filteredData = jsonData.filter(row => 
+        Object.values(row).some(value => value.toString().toLowerCase().includes(searchTerm))
+    );
 
-    console.log("Filtered Data:", tableBody.innerHTML); // ✅ Debugging step
+    console.log("🔎 Filtered Results:", filteredData); // Debugging log
+
+    if (filteredData.length === 0) {
+        tableBody.innerHTML = "<tr><td colspan='100%'>No matching results found.</td></tr>";
+        return;
+    }
+
+    filteredData.forEach(row => {
+        const tr = document.createElement("tr");
+        headers.forEach(header => {
+            const td = document.createElement("td");
+            td.textContent = row[header];
+            tr.appendChild(td);
+        });
+        tableBody.appendChild(tr);
+    });
 }
