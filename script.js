@@ -1,13 +1,18 @@
 let jsonData = [];
 
-// Ensure the DOM is fully loaded before adding event listeners
+// Ensure the script runs after the page loads
 document.addEventListener("DOMContentLoaded", function () {
+    console.log("🚀 JavaScript Loaded!"); // Debugging
+
     const fileInput = document.getElementById("fileInput");
-    if (!fileInput) {
-        console.error("❌ fileInput element not found!");
+    const searchButton = document.getElementById("searchButton");
+
+    if (!fileInput || !searchButton) {
+        console.error("❌ fileInput or searchButton not found! Check HTML IDs.");
         return;
     }
 
+    // Load Excel file when user selects a file
     fileInput.addEventListener("change", function(event) {
         const file = event.target.files[0];
         if (!file) return;
@@ -19,21 +24,26 @@ document.addEventListener("DOMContentLoaded", function () {
             const data = new Uint8Array(e.target.result);
             const workbook = XLSX.read(data, { type: "array" });
             jsonData = XLSX.utils.sheet_to_json(workbook.Sheets[workbook.SheetNames[0]]);
-            
+
             console.log("✅ Excel Data Loaded:", jsonData);
             alert("Excel file loaded successfully!");
         };
     });
+
+    // Attach search function to the button
+    searchButton.addEventListener("click", searchData);
 });
 
 function searchData() {
-    // Ensure the input fields exist before accessing them
+    console.log("🔍 Running searchData()..."); // Debugging
+
+    // Get search inputs
     const searchInput1 = document.getElementById("searchInput1");
     const searchInput2 = document.getElementById("searchInput2");
     const searchInput3 = document.getElementById("searchInput3");
 
     if (!searchInput1 || !searchInput2 || !searchInput3) {
-        console.error("❌ One or more search input fields not found!");
+        console.error("❌ One or more search input fields not found! Check HTML IDs.");
         return;
     }
 
@@ -41,15 +51,15 @@ function searchData() {
     const searchTerm2 = searchInput2.value.toLowerCase();
     const searchTerm3 = searchInput3.value.toLowerCase();
 
-    const tableHead = document.getElementById("tableHead");
-    const tableBody = document.getElementById("tableBody");
-    tableHead.innerHTML = "";
-    tableBody.innerHTML = "";
-
     if (jsonData.length === 0) {
         alert("⚠️ No data loaded. Please upload an Excel file first!");
         return;
     }
+
+    const tableHead = document.getElementById("tableHead");
+    const tableBody = document.getElementById("tableBody");
+    tableHead.innerHTML = "";
+    tableBody.innerHTML = "";
 
     // Set table headers
     const headers = Object.keys(jsonData[0]);
@@ -80,4 +90,6 @@ function searchData() {
         });
         tableBody.appendChild(tr);
     });
+
+    console.log("✅ Search completed successfully!");
 }
