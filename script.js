@@ -1,5 +1,5 @@
 async function fetchExcelData() {
-    const url = "https://raw.githubusercontent.com/sureshkoumar11/Y22/main/data.xlsx"; // Make sure this is correct
+    const url = "https://raw.githubusercontent.com/sureshkoumar11/Y22/main/data.xlsx"; // Ensure correct URL
     const response = await fetch(url);
     const data = await response.arrayBuffer();
     const workbook = XLSX.read(data, { type: "array" });
@@ -10,10 +10,13 @@ async function fetchExcelData() {
 }
 
 async function searchData() {
-    const searchTerm = document.getElementById("searchInput").value.toLowerCase();
+    const searchTerm1 = document.getElementById("searchInput1").value.toLowerCase();
+    const searchTerm2 = document.getElementById("searchInput2").value.toLowerCase();
+    const searchTerm3 = document.getElementById("searchInput3").value.toLowerCase();
+    
     const jsonData = await fetchExcelData();
 
-    console.log("🔍 Searching for:", searchTerm); // Debugging log
+    console.log("🔍 Searching for:", searchTerm1, searchTerm2, searchTerm3); // Debugging log
     console.log("📄 Excel Data:", jsonData); // Debugging log
 
     const tableHead = document.getElementById("tableHead");
@@ -37,7 +40,9 @@ async function searchData() {
 
     // Filter and display data
     let filteredData = jsonData.filter(row => 
-        Object.values(row).some(value => value.toString().toLowerCase().includes(searchTerm))
+        Object.values(row).some(value => value.toString().toLowerCase().includes(searchTerm1)) &&
+        Object.values(row).some(value => value.toString().toLowerCase().includes(searchTerm2)) &&
+        Object.values(row).some(value => value.toString().toLowerCase().includes(searchTerm3))
     );
 
     console.log("🔎 Filtered Results:", filteredData); // Debugging log
