@@ -1,23 +1,28 @@
-async function fetchExcelData() {
-    const url = "https://raw.githubusercontent.com/sureshkoumar11/Y22/main/data.xlsx"; // Ensure correct URL
-    const response = await fetch(url);
-    const data = await response.arrayBuffer();
-    const workbook = XLSX.read(data, { type: "array" });
-    const jsonData = XLSX.utils.sheet_to_json(workbook.Sheets[workbook.SheetNames[0]]);
-    
-    console.log("✅ Loaded Excel Data:", jsonData); // Debugging log
-    return jsonData;
-}
+let jsonData = [];
 
-async function searchData() {
+document.getElementById("fileInput").addEventListener("change", function(event) {
+    const file = event.target.files[0];
+    if (!file) return;
+
+    const reader = new FileReader();
+    reader.readAsArrayBuffer(file);
+
+    reader.onload = function(e) {
+        const data = new Uint8Array(e.target.result);
+        const workbook = XLSX.read(data, { type: "array" });
+        jsonData = XLSX.utils.sheet_to_json(workbook.Sheets[workbook.SheetNames[0]]);
+        
+        console.log("✅ Excel Data Loaded:", jsonData); // Debugging log
+        alert("Excel file loaded successfully!");
+    };
+});
+
+function searchData() {
     const searchTerm1 = document.getElementById("searchInput1").value.toLowerCase();
     const searchTerm2 = document.getElementById("searchInput2").value.toLowerCase();
     const searchTerm3 = document.getElementById("searchInput3").value.toLowerCase();
-    
-    const jsonData = await fetchExcelData();
 
     console.log("🔍 Searching for:", searchTerm1, searchTerm2, searchTerm3); // Debugging log
-    console.log("📄 Excel Data:", jsonData); // Debugging log
 
     const tableHead = document.getElementById("tableHead");
     const tableBody = document.getElementById("tableBody");
@@ -25,8 +30,8 @@ async function searchData() {
     tableBody.innerHTML = "";
 
     if (jsonData.length === 0) {
-        console.warn("⚠️ No data found in the Excel file!");
-        tableBody.innerHTML = "<tr><td colspan='100%'>No data found.</td></tr>";
+        console.warn("⚠️ No data loaded. Please upload an Excel file first!");
+        tableBody.innerHTML = "<tr><td colspan='100%'>No data loaded.</td></tr>";
         return;
     }
 
@@ -39,10 +44,10 @@ async function searchData() {
     });
 
     // Filter and display data
-    let filteredData = jsonData.filter(row => 
-        Object.values(row).some(value => value.toString().toLowerCase().includes(searchTerm1)) &&
-        Object.values(row).some(value => value.toString().toLowerCase().includes(searchTerm2)) &&
-        Object.values(row).some(value => value.toString().toLowerCase().includes(searchTerm3))
+    let filteredData = jsonData.filter(row =>
+        (!searchTerm1 || Object.values(row).some(value => value.toString().toLowerCase().includes(searchTerm1))) &&
+        (!searchTerm2 || Object.values(row).some(value => value.toString().toLowerCase().includes(searchTerm2))) &&
+        (!searchTerm3 || Object.values(row).some(value => value.toString().toLowerCase().includes(searchTerm3)))
     );
 
     console.log("🔎 Filtered Results:", filteredData); // Debugging log
