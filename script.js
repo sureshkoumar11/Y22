@@ -13,14 +13,19 @@ async function searchData() {
     const searchTerm1 = document.getElementById("searchInput1").value.toLowerCase().trim();
     const searchTerm2 = document.getElementById("searchInput2").value.toLowerCase().trim();
     const searchTerm3 = document.getElementById("searchInput3").value.toLowerCase().trim();
-    const table = document.getElementById("dataTable"); // Get table element
+    
+    const table = document.getElementById("dataTable"); 
+    const noSearchMessage = document.getElementById("noSearchMessage");
 
     table.style.display = "none"; // Hide table initially
 
+    // If no input is provided, show the message and return
     if (!searchTerm1 && !searchTerm2 && !searchTerm3) {
-        console.warn("⚠️ No search terms entered.");
-        return; // Exit function if no search terms are provided
+        noSearchMessage.style.display = "block"; // Show message
+        return; // Exit function
     }
+
+    noSearchMessage.style.display = "none"; // Hide message when searching
 
     const jsonData = await fetchExcelData();
 
