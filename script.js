@@ -13,6 +13,14 @@ async function searchData() {
     const searchTerm1 = document.getElementById("searchInput1").value.toLowerCase().trim();
     const searchTerm2 = document.getElementById("searchInput2").value.toLowerCase().trim();
     const searchTerm3 = document.getElementById("searchInput3").value.toLowerCase().trim();
+    const table = document.getElementById("dataTable"); // Get table element
+
+    table.style.display = "none"; // Hide table initially
+
+    if (!searchTerm1 && !searchTerm2 && !searchTerm3) {
+        console.warn("⚠️ No search terms entered.");
+        return; // Exit function if no search terms are provided
+    }
 
     const jsonData = await fetchExcelData();
 
@@ -26,7 +34,6 @@ async function searchData() {
 
     if (jsonData.length === 0) {
         console.warn("⚠️ No data found in the Excel file!");
-        tableBody.innerHTML = "<tr><td colspan='100%'>No data found.</td></tr>";
         return;
     }
 
@@ -53,10 +60,12 @@ async function searchData() {
     console.log("🔎 Filtered Results:", filteredData); // Debugging log
 
     if (filteredData.length === 0) {
+        table.style.display = "block"; // Show table for "No results" message
         tableBody.innerHTML = "<tr><td colspan='100%'>No matching results found.</td></tr>";
         return;
     }
 
+    // Populate table with search results
     filteredData.forEach(row => {
         const tr = document.createElement("tr");
         headers.forEach(header => {
@@ -66,4 +75,6 @@ async function searchData() {
         });
         tableBody.appendChild(tr);
     });
+
+    table.style.display = "block"; // Show table once data is found
 }
