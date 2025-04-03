@@ -15,6 +15,7 @@ async function fetchExcelData() {
         return [];
     }
 }
+
 async function searchData() {
     // Read all six search inputs
     const searchTerms = [
