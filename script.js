@@ -25,6 +25,9 @@ async function searchData() {
         document.getElementById("searchInput6").value.toLowerCase().trim()
     ];
 
+    const table = document.getElementById("dataTable");
+    const tableBody = document.getElementById("tableBody");
+
     const jsonData = await fetchExcelData();
 
     if (jsonData.length === 0) {
@@ -39,4 +42,23 @@ async function searchData() {
     });
 
     console.log("🔎 Filtered Data:", filteredData);
+
+    if (filteredData.length === 0) {
+        tableBody.innerHTML = "<tr><td colspan='100%'>No matching results found.</td></tr>";
+        table.style.display = "block";
+        return;
+    }
+
+    tableBody.innerHTML = "";
+    filteredData.forEach(row => {
+        const tr = document.createElement("tr");
+        Object.values(row).forEach(value => {
+            const td = document.createElement("td");
+            td.textContent = value;
+            tr.appendChild(td);
+        });
+        tableBody.appendChild(tr);
+    });
+
+    table.style.display = "block";
 }
