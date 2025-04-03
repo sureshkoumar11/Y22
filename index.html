@@ -6,7 +6,7 @@
     <title>Search Excel Data</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.17.2/xlsx.full.min.js"></script>
     <script src="script.js" defer></script>
-    <title>Student Information</title>
+    
     <style>
         .top-section {
             text-align: center;
@@ -48,11 +48,8 @@
             overflow-y: auto;
             border: 1px solid #ddd;
         }
-        .highlight-cell {
-            background-color: lightgreen;
-        }
         .highlight-row {
-            background-color: lightgreen;
+            background-color: yellow !important;
         }
         body {
             background-color: lightblue;
@@ -66,27 +63,30 @@
         <h3>Department of Electronics and Communication Engineering</h3>
         <h2>Student Information</h2>
     </div>
-<body>
-    <div>
-    <label for="searchBox1">Faculty Emp ID</label>
-    <input type="text" id="searchInput1" placeholder="Emp ID/Name...">
-    <button onclick="searchData()">Search</button>
-    </div>  
-    <input type="text" id="searchInput2" placeholder="Student University ID...">
-    <input type="text" id="searchInput3" placeholder="Course Code...">
-    <input type="text" id="searchInput4" placeholder="Name of the Course...">
-    <input type="text" id="searchInput5" placeholder="Bucket...">
-    <input type="text" id="searchInput6" placeholder="Sem...">
-    <button onclick="searchData()">Search</button>
-    <br><br>
+
+    <div style="text-align: center;">
+        <input type="text" id="searchInput1" placeholder="Enter first search term...">
+        <input type="text" id="searchInput2" placeholder="Enter second search term...">
+        <input type="text" id="searchInput3" placeholder="Enter third search term...">
+        <br>
+        <input type="text" id="searchInput4" placeholder="Enter fourth search term...">
+        <input type="text" id="searchInput5" placeholder="Enter fifth search term...">
+        <input type="text" id="searchInput6" placeholder="Enter sixth search term...">
+        <br>
+        <button onclick="searchData()">Search</button>
+    </div>
+    <br>
     <!-- Message shown when no search is performed -->
-    <p id="noSearchMessage">Enter search terms to see results.</p>
+    <p id="noSearchMessage" style="text-align: center;">Enter search terms to see results.</p>
+
     <!-- Initially hidden table -->
-    <table id="dataTable" border="1" style="display: none;">
-        <thead>
-            <tr id="tableHead"></tr>
-        </thead>
-        <tbody id="tableBody"></tbody>
-    </table>
+    <div class="table-container">
+        <table id="dataTable" border="1" style="display: none;">
+            <thead>
+                <tr id="tableHead"></tr>
+            </thead>
+            <tbody id="tableBody"></tbody>
+        </table>
+    </div>
 </body>
 </html>
