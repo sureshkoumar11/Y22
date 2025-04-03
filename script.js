@@ -15,8 +15,6 @@ async function fetchExcelData() {
         return [];
     }
 }
-document.getElementById("searchButton").addEventListener("click", searchData);
-
 async function searchData() {
     const searchTerms = [
         document.getElementById("searchInput1").value.toLowerCase().trim(),
@@ -27,59 +25,18 @@ async function searchData() {
         document.getElementById("searchInput6").value.toLowerCase().trim()
     ];
 
-    console.log("🔍 Search terms:", searchTerms);
-
-    if (searchTerms.every(term => term === "")) {
-        document.getElementById("noSearchMessage").style.display = "block";
-        document.getElementById("dataTable").style.display = "none";
-        return;
-    }
-
-    document.getElementById("noSearchMessage").style.display = "none";
-    document.getElementById("dataTable").style.display = "none";
-
     const jsonData = await fetchExcelData();
-    if (!jsonData.length) {
+
+    if (jsonData.length === 0) {
         console.warn("⚠️ No data available.");
         return;
     }
 
-    const tableHead = document.getElementById("tableHead");
-    const tableBody = document.getElementById("tableBody");
-    tableHead.innerHTML = "";
-    tableBody.innerHTML = "";
-
-    // Set table headers
-    const headers = Object.keys(jsonData[0]);
-    headers.forEach(header => {
-        const th = document.createElement("th");
-        th.textContent = header;
-        tableHead.appendChild(th);
-    });
-
-    // Filter Data
     const filteredData = jsonData.filter(row => {
-        const rowValues = Object.values(row).map(value => value.toString().toLowerCase());
-        return searchTerms.every(term => term === "" || rowValues.some(value => value.includes(term)));
+        return searchTerms.some(term => 
+            term !== "" && Object.values(row).some(value => value.toString().toLowerCase().includes(term))
+        );
     });
 
-    console.log("🔎 Filtered Results:", filteredData);
-
-    if (!filteredData.length) {
-        tableBody.innerHTML = "<tr><td colspan='100%'>No matching results found.</td></tr>";
-        document.getElementById("dataTable").style.display = "block";
-        return;
-    }
-
-    filteredData.forEach(row => {
-        const tr = document.createElement("tr");
-        headers.forEach(header => {
-            const td = document.createElement("td");
-            td.textContent = row[header];
-            tr.appendChild(td);
-        });
-        tableBody.appendChild(tr);
-    });
-
-    document.getElementById("dataTable").style.display = "block";
+    console.log("🔎 Filtered Data:", filteredData);
 }
