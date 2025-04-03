@@ -17,59 +17,36 @@ async function fetchExcelData() {
 }
 
 async function searchData() {
-    // Read all six search inputs
-    const searchTerms = [
-        document.getElementById("searchInput1").value.toLowerCase().trim(),
-        document.getElementById("searchInput2").value.toLowerCase().trim(),
-        document.getElementById("searchInput3").value.toLowerCase().trim(),
-        document.getElementById("searchInput4").value.toLowerCase().trim(),
-        document.getElementById("searchInput5").value.toLowerCase().trim(),
-        document.getElementById("searchInput6").value.toLowerCase().trim()
-    ];
+    const searchTerm1 = document.getElementById("searchInput1").value.toLowerCase().trim();
+    const searchTerm2 = document.getElementById("searchInput2").value.toLowerCase().trim();
+    const searchTerm3 = document.getElementById("searchInput3").value.toLowerCase().trim();
 
-    console.log("🔍 Search terms:", searchTerms);
+    const table = document.getElementById("dataTable");
+    const noSearchMessage = document.getElementById("noSearchMessage");
 
-    // Hide table if no search term is entered
-    if (searchTerms.every(term => term === "")) {
-        document.getElementById("noSearchMessage").style.display = "block";
-        document.getElementById("dataTable").style.display = "none";
+    console.log("🔍 Search terms:", searchTerm1, searchTerm2, searchTerm3);
+
+    if (!searchTerm1 && !searchTerm2 && !searchTerm3) {
+        noSearchMessage.style.display = "block"; // Show message
+        table.style.display = "none"; // Hide table
         return;
     }
 
-    document.getElementById("noSearchMessage").style.display = "none";
+    noSearchMessage.style.display = "none"; // Hide message
+    table.style.display = "none"; // Hide table before new results load
 
-    // Fetch the Excel data
     const jsonData = await fetchExcelData();
     if (jsonData.length === 0) {
         console.warn("⚠️ No data available.");
         return;
     }
 
-    // Filter data based on all six search inputs
-    const filteredData = jsonData.filter(row => {
-        const rowValues = Object.values(row).map(value => value.toString().toLowerCase());
-        
-        return searchTerms.every(term => 
-            term === "" || rowValues.some(value => value.includes(term))
-        );
-    });
-
-    console.log("🔎 Filtered Data:", filteredData);
-
-    // Display table and handle no results case
-    const table = document.getElementById("dataTable");
-    const tableBody = document.getElementById("tableBody");
-    tableBody.innerHTML = ""; // Clear previous results
-
-    if (filteredData.length === 0) {
-        tableBody.innerHTML = "<tr><td colspan='100%'>No matching results found.</td></tr>";
-        table.style.display = "block";
-        return;
-    }
-
-    // Generate table headers
     const tableHead = document.getElementById("tableHead");
-    tableHead.innerHTML = ""; 
+    const tableBody = document.getElementById("tableBody");
+    tableHead.innerHTML = "";
+    tableBody.innerHTML = "";
+
+    // Set table headers
     const headers = Object.keys(jsonData[0]);
     headers.forEach(header => {
         const th = document.createElement("th");
@@ -77,7 +54,24 @@ async function searchData() {
         tableHead.appendChild(th);
     });
 
-    // Populate table with filtered data
+    // Filter and display data
+    let filteredData = jsonData.filter(row => {
+        let rowValues = Object.values(row).map(value => value.toString().toLowerCase());
+        return (
+            (searchTerm1 === "" || rowValues.some(value => value.includes(searchTerm1))) &&
+            (searchTerm2 === "" || rowValues.some(value => value.includes(searchTerm2))) &&
+            (searchTerm3 === "" || rowValues.some(value => value.includes(searchTerm3)))
+        );
+    });
+
+    console.log("🔎 Filtered Results:", filteredData);
+
+    if (filteredData.length === 0) {
+        table.style.display = "block";
+        tableBody.innerHTML = "<tr><td colspan='100%'>No matching results found.</td></tr>";
+        return;
+    }
+
     filteredData.forEach(row => {
         const tr = document.createElement("tr");
         headers.forEach(header => {
