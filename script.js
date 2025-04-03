@@ -47,7 +47,6 @@ async function searchData() {
     // Filter data based on all six search inputs
     const filteredData = jsonData.filter(row => {
         const rowValues = Object.values(row).map(value => value.toString().toLowerCase());
-        
         return searchTerms.every(term => 
             term === "" || rowValues.some(value => value.includes(term))
         );
@@ -77,26 +76,29 @@ async function searchData() {
     });
 
     // Populate table with filtered data
-filteredData.forEach(row => {
-    const tr = document.createElement("tr");
-    let highlightRow = false; // Flag to check if "CGPA" is present
+    filteredData.forEach(row => {
+        const tr = document.createElement("tr");
+        let highlightRow = false; // Flag to check if "CGPA" exists in the row
 
-    headers.forEach(header => {
-        const td = document.createElement("td");
-        td.textContent = row[header];
+        headers.forEach(header => {
+            const td = document.createElement("td");
+            td.textContent = row[header];
 
-        // Check if the cell contains "CGPA"
-        if (td.textContent.toLowerCase().includes("cgpa")) {
-            highlightRow = true;
+            // Check if any cell contains "CGPA" (case insensitive)
+            if (td.textContent.trim().toLowerCase() === "cgpa") {
+                highlightRow = true;
+            }
+
+            tr.appendChild(td);
+        });
+
+        // Apply yellow background if "CGPA" is found in the row
+        if (highlightRow) {
+            tr.classList.add("highlight-row"); // Add CSS class for styling
         }
 
-        tr.appendChild(td);
+        tableBody.appendChild(tr);
     });
 
-    // Apply yellow background if "CGPA" is found in the row
-    if (highlightRow) {
-        tr.style.backgroundColor = "yellow";
-    }
-
-    tableBody.appendChild(tr);
-});
+    table.style.display = "block"; // Show table
+}
