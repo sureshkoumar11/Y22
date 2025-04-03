@@ -77,15 +77,26 @@ async function searchData() {
     });
 
     // Populate table with filtered data
-    filteredData.forEach(row => {
-        const tr = document.createElement("tr");
-        headers.forEach(header => {
-            const td = document.createElement("td");
-            td.textContent = row[header];
-            tr.appendChild(td);
-        });
-        tableBody.appendChild(tr);
+filteredData.forEach(row => {
+    const tr = document.createElement("tr");
+    let highlightRow = false; // Flag to check if "CGPA" is present
+
+    headers.forEach(header => {
+        const td = document.createElement("td");
+        td.textContent = row[header];
+
+        // Check if the cell contains "CGPA"
+        if (td.textContent.toLowerCase().includes("cgpa")) {
+            highlightRow = true;
+        }
+
+        tr.appendChild(td);
     });
 
-    table.style.display = "block"; // Show table
-}
+    // Apply yellow background if "CGPA" is found in the row
+    if (highlightRow) {
+        tr.style.backgroundColor = "yellow";
+    }
+
+    tableBody.appendChild(tr);
+});
