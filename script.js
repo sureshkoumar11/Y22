@@ -88,3 +88,4 @@ async function searchData() {
     });
 
     table.style.display = "block"; // Show table
+}
