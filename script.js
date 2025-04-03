@@ -15,6 +15,7 @@ async function fetchExcelData() {
         return [];
     }
 }
+document.getElementById("searchButton").addEventListener("click", searchData);
 
 async function searchData() {
     const searchTerms = [
@@ -26,22 +27,19 @@ async function searchData() {
         document.getElementById("searchInput6").value.toLowerCase().trim()
     ];
 
-    const table = document.getElementById("dataTable");
-    const noSearchMessage = document.getElementById("noSearchMessage");
-
     console.log("🔍 Search terms:", searchTerms);
 
     if (searchTerms.every(term => term === "")) {
-        noSearchMessage.style.display = "block"; // Show message
-        table.style.display = "none"; // Hide table
+        document.getElementById("noSearchMessage").style.display = "block";
+        document.getElementById("dataTable").style.display = "none";
         return;
     }
 
-    noSearchMessage.style.display = "none"; // Hide message
-    table.style.display = "none"; // Hide table before new results load
+    document.getElementById("noSearchMessage").style.display = "none";
+    document.getElementById("dataTable").style.display = "none";
 
     const jsonData = await fetchExcelData();
-    if (jsonData.length === 0) {
+    if (!jsonData.length) {
         console.warn("⚠️ No data available.");
         return;
     }
@@ -59,17 +57,17 @@ async function searchData() {
         tableHead.appendChild(th);
     });
 
-    // Filter and display data
-    let filteredData = jsonData.filter(row => {
-        let rowValues = Object.values(row).map(value => value.toString().toLowerCase());
+    // Filter Data
+    const filteredData = jsonData.filter(row => {
+        const rowValues = Object.values(row).map(value => value.toString().toLowerCase());
         return searchTerms.every(term => term === "" || rowValues.some(value => value.includes(term)));
     });
 
     console.log("🔎 Filtered Results:", filteredData);
 
-    if (filteredData.length === 0) {
-        table.style.display = "block";
+    if (!filteredData.length) {
         tableBody.innerHTML = "<tr><td colspan='100%'>No matching results found.</td></tr>";
+        document.getElementById("dataTable").style.display = "block";
         return;
     }
 
@@ -83,5 +81,5 @@ async function searchData() {
         tableBody.appendChild(tr);
     });
 
-    table.style.display = "block"; // Show table
+    document.getElementById("dataTable").style.display = "block";
 }
