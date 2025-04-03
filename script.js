@@ -17,16 +17,21 @@ async function fetchExcelData() {
 }
 
 async function searchData() {
-    const searchTerm1 = document.getElementById("searchInput1").value.toLowerCase().trim();
-    const searchTerm2 = document.getElementById("searchInput2").value.toLowerCase().trim();
-    const searchTerm3 = document.getElementById("searchInput3").value.toLowerCase().trim();
+    const searchTerms = [
+        document.getElementById("searchInput1").value.toLowerCase().trim(),
+        document.getElementById("searchInput2").value.toLowerCase().trim(),
+        document.getElementById("searchInput3").value.toLowerCase().trim(),
+        document.getElementById("searchInput4").value.toLowerCase().trim(),
+        document.getElementById("searchInput5").value.toLowerCase().trim(),
+        document.getElementById("searchInput6").value.toLowerCase().trim()
+    ];
 
     const table = document.getElementById("dataTable");
     const noSearchMessage = document.getElementById("noSearchMessage");
 
-    console.log("🔍 Search terms:", searchTerm1, searchTerm2, searchTerm3);
+    console.log("🔍 Search terms:", searchTerms);
 
-    if (!searchTerm1 && !searchTerm2 && !searchTerm3) {
+    if (searchTerms.every(term => term === "")) {
         noSearchMessage.style.display = "block"; // Show message
         table.style.display = "none"; // Hide table
         return;
@@ -57,11 +62,7 @@ async function searchData() {
     // Filter and display data
     let filteredData = jsonData.filter(row => {
         let rowValues = Object.values(row).map(value => value.toString().toLowerCase());
-        return (
-            (searchTerm1 === "" || rowValues.some(value => value.includes(searchTerm1))) &&
-            (searchTerm2 === "" || rowValues.some(value => value.includes(searchTerm2))) &&
-            (searchTerm3 === "" || rowValues.some(value => value.includes(searchTerm3)))
-        );
+        return searchTerms.every(term => term === "" || rowValues.some(value => value.includes(term)));
     });
 
     console.log("🔎 Filtered Results:", filteredData);
